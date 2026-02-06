@@ -222,7 +222,7 @@
     createApp({
         data() {
             return {
-                lang: localStorage.getItem('mathdoc-lang') || 'zh',
+                lang: 'zh', // 默认中文，在 mounted 中读取 localStorage
                 currentTab: 'choice',
                 sortKey: 'final',
                 sortDesc: true,
@@ -400,6 +400,11 @@
             currentTab() { this.updateRadar(); }
         },
         mounted() {
+            // 从 localStorage 读取语言设置
+            const savedLang = localStorage.getItem('mathdoc-lang');
+            if (savedLang) {
+                this.lang = savedLang;
+            }
             this.initDistChart();
             this.initLengthChart();
             this.initFormulaChart();
