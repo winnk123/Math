@@ -117,9 +117,9 @@
             <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                 <div class="mb-4">
                     <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-                        <span>📏</span> Average Question Length
+                        <span>📏</span> {{ t('avgLength') }}
                     </h3>
-                    <p class="text-xs text-gray-400">Character count by question type</p>
+                    <p class="text-xs text-gray-400">{{ t('avgLengthDesc') }}</p>
                 </div>
                 <div class="min-h-[200px]">
                     <canvas id="lengthChart"></canvas>
@@ -129,9 +129,9 @@
             <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
                 <div class="mb-4">
                     <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-                        <span>∑</span> Average Formula Ratio
+                        <span>∑</span> {{ t('avgFormula') }}
                     </h3>
-                    <p class="text-xs text-gray-400">Formula content percentage by type</p>
+                    <p class="text-xs text-gray-400">{{ t('avgFormulaDesc') }}</p>
                 </div>
                 <div class="min-h-[200px]">
                     <canvas id="formulaChart"></canvas>
@@ -167,9 +167,9 @@
                     </div>
                 </div>
                 <div class="flex bg-white border border-gray-200 p-1 rounded-lg text-xs font-medium">
-                    <button @click="filterType = 'all'" :class="{'bg-gray-100 text-gray-900 font-bold': filterType === 'all'}" class="px-3 py-1.5 rounded-md transition text-gray-500">All</button>
-                    <button @click="filterType = 'Proprietary'" :class="{'bg-purple-50 text-purple-700 font-bold': filterType === 'Proprietary'}" class="px-3 py-1.5 rounded-md transition text-gray-500">Proprietary</button>
-                    <button @click="filterType = 'Open Source'" :class="{'bg-green-50 text-green-700 font-bold': filterType === 'Open Source'}" class="px-3 py-1.5 rounded-md transition text-gray-500">Open Source</button>
+                    <button @click="filterType = 'all'" :class="{'bg-gray-100 text-gray-900 font-bold': filterType === 'all'}" class="px-3 py-1.5 rounded-md transition text-gray-500">{{ t('all') }}</button>
+                    <button @click="filterType = 'Proprietary'" :class="{'bg-purple-50 text-purple-700 font-bold': filterType === 'Proprietary'}" class="px-3 py-1.5 rounded-md transition text-gray-500">{{ t('proprietary') }}</button>
+                    <button @click="filterType = 'Open Source'" :class="{'bg-green-50 text-green-700 font-bold': filterType === 'Open Source'}" class="px-3 py-1.5 rounded-md transition text-gray-500">{{ t('openSource') }}</button>
                 </div>
             </div>
 
@@ -178,13 +178,13 @@
                     <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200 text-xs uppercase tracking-wider">
                         <tr>
                             <th class="px-4 py-4 w-12 text-center sticky left-0 bg-gray-50 z-10">#</th>
-                            <th class="px-4 py-4 sticky left-12 bg-gray-50 z-10 w-48 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Model</th>
-                            <th @click="sortBy('final')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">Final <span :class="getSortIconClass('final')" class="text-xs">▼</span></div></th>
-                            <th @click="sortBy('stem')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">Stem Acc <span :class="getSortIconClass('stem')" class="text-xs">▼</span></div></th>
-                            <th @click="sortBy('visual')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition border-r border-gray-200"><div class="flex items-center gap-1">Visual Sim <span :class="getSortIconClass('visual')" class="text-xs">▼</span></div></th>
-                            <th @click="sortBy('recall')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">Recall <span :class="getSortIconClass('recall')" class="text-xs">▼</span></div></th>
-                            <th @click="sortBy('precision')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">Precision <span :class="getSortIconClass('precision')" class="text-xs">▼</span></div></th>
-                            <th @click="sortBy('refusalF1')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50 text-orange-900 border-l border-orange-100"><div class="flex items-center gap-1 font-bold">Refusal F1 <span :class="getSortIconClass('refusalF1')" class="text-xs">▼</span></div></th>
+                            <th class="px-4 py-4 sticky left-12 bg-gray-50 z-10 w-48 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">{{ t('model') }}</th>
+                            <th @click="sortBy('final')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">{{ t('final') }} <span :class="getSortIconClass('final')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('stem')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">{{ t('stemAcc') }} <span :class="getSortIconClass('stem')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('visual')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition border-r border-gray-200"><div class="flex items-center gap-1">{{ t('visualSim') }} <span :class="getSortIconClass('visual')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('recall')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">{{ t('recall') }} <span :class="getSortIconClass('recall')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('precision')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">{{ t('precision') }} <span :class="getSortIconClass('precision')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('refusalF1')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50 text-orange-900 border-l border-orange-100"><div class="flex items-center gap-1 font-bold">{{ t('refusalF1') }} <span :class="getSortIconClass('refusalF1')" class="text-xs">▼</span></div></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
@@ -198,7 +198,7 @@
                                 </td>
                                 <td class="px-4 py-3 sticky left-12 bg-white group-hover:bg-gray-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                     <div class="font-bold text-gray-900">{{ item.model }}</div>
-                                    <div class="mt-0.5"><span :class="item.type === 'Open Source' ? 'text-green-600' : 'text-purple-600'" class="text-[10px] uppercase tracking-wide font-bold">{{ item.type }}</span></div>
+                                    <div class="mt-0.5"><span :class="item.type === 'Open Source' ? 'text-green-600' : 'text-purple-600'" class="text-[10px] uppercase tracking-wide font-bold">{{ tType(item.type) }}</span></div>
                                 </td>
                                 <td class="px-4 py-3"><div class="font-mono font-bold text-indigo-700">{{ item.final.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-indigo-600" :style="{ width: item.final + '%' }"></div></div></td>
                                 <td class="px-4 py-3"><div class="font-mono text-gray-600">{{ item.stem.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-gray-400" :style="{ width: item.stem + '%' }"></div></div></td>
@@ -212,7 +212,7 @@
                 </table>
             </div>
         </div>
-        <footer class="mt-8 text-center text-gray-400 text-xs"><p>Data Source: "MathDoc: Benchmarking Structured Extraction..." (2026)</p></footer>
+        <footer class="mt-8 text-center text-gray-400 text-xs"><p>{{ t('dataSource') }} "MathDoc: Benchmarking Structured Extraction..." (2026)</p></footer>
     </main>
 </div>
 
@@ -418,6 +418,20 @@
             // 翻译方法
             t(key) {
                 return this.translations[this.lang][key] || key;
+            },
+            // 翻译模型类型
+            tType(type) {
+                const typeMap = {
+                    zh: {
+                        'Proprietary': '专有',
+                        'Open Source': '开源'
+                    },
+                    en: {
+                        'Proprietary': 'Proprietary',
+                        'Open Source': 'Open Source'
+                    }
+                };
+                return typeMap[this.lang][type] || type;
             },
             // 切换语言
             toggleLang() {
