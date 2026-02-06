@@ -328,11 +328,6 @@
                     solve: 44
                 },
 
-                tabs: [
-                    { id: 'solve', name: 'solve', emoji: '📊', desc: 'Weighted average across all tasks.' },
-                    { id: 'choice', name: 'choice', emoji: '🤔', desc: 'Extraction of option text and selection.' },
-                    { id: 'blank', name: 'blank', emoji: '📝', desc: 'Text and formula extraction.' },
-                ],
 
                 datasets: {
                     'solve': [
@@ -376,6 +371,21 @@
         },
         computed: {
             currentData() { return this.datasets[this.currentTab] || []; },
+            tabs() {
+                const tabsData = {
+                    zh: [
+                        { id: 'solve', name: '全部', emoji: '📊', desc: '所有任务的加权平均' },
+                        { id: 'choice', name: '选择题', emoji: '🤔', desc: '选项文本提取与选择' },
+                        { id: 'blank', name: '填空题', emoji: '📝', desc: '文本和公式提取' },
+                    ],
+                    en: [
+                        { id: 'solve', name: 'Overall', emoji: '📊', desc: 'Weighted average across all tasks.' },
+                        { id: 'choice', name: 'choice', emoji: '🤔', desc: 'Extraction of option text and selection.' },
+                        { id: 'blank', name: 'blank', emoji: '📝', desc: 'Text and formula extraction.' },
+                    ]
+                };
+                return tabsData[this.lang] || tabsData.en;
+            },
             sortedData() {
                 let data = [...this.currentData];
                 if (this.filterType !== 'all') data = data.filter(item => item.type === this.filterType);
