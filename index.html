@@ -74,15 +74,15 @@
                 <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
                     <div class="bg-blue-50 rounded p-2">
                         <div class="font-bold text-blue-700">1,250</div>
-                        <div class="text-blue-400">Choice</div>
+                        <div class="text-blue-400">choice</div>
                     </div>
                     <div class="bg-teal-50 rounded p-2">
                         <div class="font-bold text-teal-700">1,100</div>
-                        <div class="text-teal-400">Blank</div>
+                        <div class="text-teal-400">blank</div>
                     </div>
                     <div class="bg-purple-50 rounded p-2">
                         <div class="font-bold text-purple-700">1,259</div>
-                        <div class="text-purple-400">Subjective</div>
+                        <div class="text-purple-400">solve</div>
                     </div>
                 </div>
             </div>
@@ -229,27 +229,27 @@
                 datasetStats: {
                     choice: 1250,
                     blank: 1100,
-                    subjective: 1259
+                    solve: 1259
                 },
 
                 // 题目平均长度（按题型）
                 avgLength: {
                     choice: 180,
                     blank: 110,
-                    subjective: 195
+                    solve: 195
                 },
 
                 // 平均公式含量（按题型，百分比）
                 formulaRatio: {
                     choice: 50,
                     blank: 47,
-                    subjective: 44
+                    solve: 44
                 },
 
                 tabs: [
                     { id: 'solve', name: 'Overall', emoji: '📊', desc: 'Weighted average across all tasks.' },
-                    { id: 'choice', name: 'Choice Questions', emoji: '🤔', desc: 'Extraction of option text and selection.' },
-                    { id: 'blank', name: 'Fill-in-the-Blank', emoji: '📝', desc: 'Text and formula extraction.' },
+                    { id: 'choice', name: 'choice', emoji: '🤔', desc: 'Extraction of option text and selection.' },
+                    { id: 'blank', name: 'blank', emoji: '📝', desc: 'Text and formula extraction.' },
                 ],
 
                 datasets: {
@@ -324,9 +324,9 @@
                 this.distChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Choice', 'Blank', 'Subjective'],
+                        labels: ['choice', 'blank', 'solve'],
                         datasets: [{
-                            data: [this.datasetStats.choice, this.datasetStats.blank, this.datasetStats.subjective],
+                            data: [this.datasetStats.choice, this.datasetStats.blank, this.datasetStats.solve],
                             backgroundColor: ['#3b82f6', '#14b8a6', '#a855f7'],
                             borderWidth: 0,
                             hoverOffset: 4
@@ -426,10 +426,10 @@
                 this.lengthChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Choice', 'Blank', 'Subjective'],
+                        labels: ['choice', 'blank', 'solve'],
                         datasets: [{
                             label: 'Average Length',
-                            data: [this.avgLength.choice, this.avgLength.blank, this.avgLength.subjective],
+                            data: [this.avgLength.choice, this.avgLength.blank, this.avgLength.solve],
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',
                                 'rgba(20, 184, 166, 0.8)',
@@ -484,10 +484,10 @@
                 this.formulaChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Choice', 'Blank', 'Subjective'],
+                        labels: ['choice', 'blank', 'solve'],
                         datasets: [{
                             label: 'Formula Ratio',
-                            data: [this.formulaRatio.choice, this.formulaRatio.blank, this.formulaRatio.subjective],
+                            data: [this.formulaRatio.choice, this.formulaRatio.blank, this.formulaRatio.solve],
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',
                                 'rgba(20, 184, 166, 0.8)',
