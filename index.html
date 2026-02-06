@@ -54,7 +54,7 @@
         
         <div class="mb-6">
             <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span class="text-2xl">🧐</span> <span v-html="t('whyMathDoc')"></span>
+                <span class="text-2xl">🧐</span> {{ t('whyMathDoc') }}
             </h2>
             <p class="text-gray-600 text-sm mt-1 max-w-4xl" v-html="t('whyDesc')">
             </p>
@@ -239,7 +239,7 @@
                         papers: '论文集',
                         version: 'v1.6',
                         whyMathDoc: '为什么选择 MathDoc？',
-                        whyDesc: '现有基准测试专注于干净文档。<strong>MathDoc</strong> 评估模型如何处理<strong>嘈杂的扫描高中数学试卷</strong>（3,609 道题），专注于结构化提取和说"我不知道"的能力（&nbsp;主动拒绝&nbsp;）。',
+                        whyDesc: '现有基准测试专注于干净文档。<strong>MathDoc</strong> 评估模型如何处理<strong>嘈杂的扫描高中数学试卷</strong>（3,609 道题），专注于结构化提取和说"我不知道"的能力（主动拒绝）。',
                         questionTypes: '题型分布',
                         questionDist: '3,609 道题的分布',
                         total: '总计',
@@ -374,9 +374,9 @@
             tabs() {
                 const tabsData = {
                     zh: [
-                        { id: 'solve', name: '全部', emoji: '📊', desc: '所有任务的加权平均' },
-                        { id: 'choice', name: '选择题', emoji: '🤔', desc: '选项文本提取与选择' },
-                        { id: 'blank', name: '填空题', emoji: '📝', desc: '文本和公式提取' },
+                        { id: 'solve', name: 'solve', emoji: '📊', desc: '所有任务的加权平均' },
+                        { id: 'choice', name: 'choice', emoji: '🤔', desc: '选项文本提取与选择' },
+                        { id: 'blank', name: 'blank', emoji: '📝', desc: '文本和公式提取' },
                     ],
                     en: [
                         { id: 'solve', name: 'Overall', emoji: '📊', desc: 'Weighted average across all tasks.' },
@@ -433,6 +433,10 @@
                 };
                 return typeMap[this.lang][type] || type;
             },
+            // 获取图表标签
+            getChartLabels() {
+                return this.lang === 'zh' ? ['solve', 'choice', 'blank'] : ['solve', 'choice', 'blank'];
+            },
             // 切换语言
             toggleLang() {
                 this.lang = this.lang === 'zh' ? 'en' : 'zh';
@@ -456,7 +460,7 @@
                 this.distChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['choice', 'blank', 'solve'],
+                        labels: this.getChartLabels(),
                         datasets: [{
                             data: [this.datasetStats.choice, this.datasetStats.blank, this.datasetStats.solve],
                             backgroundColor: ['#3b82f6', '#14b8a6', '#a855f7'],
@@ -483,7 +487,9 @@
                     const topModels = this.sortedData.slice(0, 3);
                     if (!topModels.length) return;
 
-                    const labels = ['Stem Acc', 'Visual Sim', 'Recall', 'Precision', 'Refusal F1'];
+                    const labels = this.lang === 'zh'
+                        ? ['主干准确率', '视觉相似度', '召回率', '精确率', '拒绝 F1']
+                        : ['Stem Acc', 'Visual Sim', 'Recall', 'Precision', 'Refusal F1'];
                     const colors = [
                         { border: '#6366f1', bg: 'rgba(99, 102, 241, 0.2)' },
                         { border: '#10b981', bg: 'rgba(16, 185, 129, 0.2)' },
@@ -558,9 +564,9 @@
                 this.lengthChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['choice', 'blank', 'solve'],
+                        labels: this.getChartLabels(),
                         datasets: [{
-                            label: 'Average Length',
+                            label: this.lang === 'zh' ? '平均长度' : 'Average Length',
                             data: [this.avgLength.choice, this.avgLength.blank, this.avgLength.solve],
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',
@@ -616,9 +622,9 @@
                 this.formulaChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['choice', 'blank', 'solve'],
+                        labels: this.getChartLabels(),
                         datasets: [{
-                            label: 'Formula Ratio',
+                            label: this.lang === 'zh' ? '公式含量' : 'Formula Ratio',
                             data: [this.formulaRatio.choice, this.formulaRatio.blank, this.formulaRatio.solve],
                             backgroundColor: [
                                 'rgba(59, 130, 246, 0.8)',
