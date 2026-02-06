@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathDoc Benchmark Leaderboard (Full Dashboard)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        [v-cloak] { display: none; }
+        th, td { white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+
+<div id="app" v-cloak class="pb-12">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-lg font-bold text-xl shadow-indigo-200">MD</div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 leading-tight">MathDoc Benchmark</h1>
+                    <p class="text-xs text-gray-500">Structured Extraction & Active Refusal Evaluation</p>
+                </div>
+            </div>
+            <div class="flex gap-3 text-sm font-medium">
+                <span class="px-2 py-1 bg-gray-100 rounded text-gray-600">v1.6 (Dashboard)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <span class="text-2xl">🧐</span> Why MathDoc?
+            </h2>
+            <p class="text-gray-600 text-sm mt-1 max-w-4xl">
+                Existing benchmarks focus on clean documents. <strong>MathDoc</strong> evaluates how models handle 
+                <strong>noisy, scanned high-school mathematics exams</strong> (3,609 questions), focusing on structured extraction and the ability to say "I don't know" (Active Refusal).
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <span>📚</span> Question Types
+                    </h3>
+                    <p class="text-xs text-gray-400">Distribution of 3,609 questions</p>
+                </div>
+
+                <div class="relative flex-grow flex items-center justify-center min-h-[200px]">
+                    <canvas id="distributionChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-bold text-gray-800">3.6k</span>
+                        <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Total</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-blue-50 rounded p-2">
+                        <div class="font-bold text-blue-700">1,250</div>
+                        <div class="text-blue-400">Choice</div>
+                    </div>
+                    <div class="bg-teal-50 rounded p-2">
+                        <div class="font-bold text-teal-700">1,100</div>
+                        <div class="text-teal-400">Blank</div>
+                    </div>
+                    <div class="bg-purple-50 rounded p-2">
+                        <div class="font-bold text-purple-700">1,259</div>
+                        <div class="text-purple-400">Subjective</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                            <span>⚔️</span> Top 3 Models Battle
+                        </h3>
+                        <p class="text-xs text-gray-400">Comparing capabilities on current task</p>
+                    </div>
+                    <div class="flex gap-3 text-xs">
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Rank 1</div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Rank 2</div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Rank 3</div>
+                    </div>
+                </div>
+                <div class="relative flex-grow min-h-[240px]">
+                    <canvas id="capabilityRadar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <span>📏</span> Average Question Length
+                    </h3>
+                    <p class="text-xs text-gray-400">Character count by question type</p>
+                </div>
+                <div class="min-h-[200px]">
+                    <canvas id="lengthChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <span>∑</span> Average Formula Ratio
+                    </h3>
+                    <p class="text-xs text-gray-400">Formula content percentage by type</p>
+                </div>
+                <div class="min-h-[200px]">
+                    <canvas id="formulaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 ml-1">Select Task</h3>
+            <div class="flex flex-wrap gap-2 p-1.5 bg-white border border-gray-200 rounded-xl shadow-sm w-fit">
+                <button 
+                    v-for="tab in tabs" 
+                    :key="tab.id"
+                    @click="currentTab = tab.id"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2"
+                    :class="currentTab === tab.id ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600'"
+                >
+                    <span>{{ tab.emoji }}</span>
+                    {{ tab.name }}
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative min-h-[500px]">
+            <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-gray-50/50">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-center w-12 h-12 bg-white border border-indigo-100 text-indigo-600 rounded-xl text-2xl shadow-sm">
+                        {{ tabs.find(t => t.id === currentTab).emoji }}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-900">{{ tabs.find(t => t.id === currentTab).name }}</h3>
+                        <p class="text-sm text-gray-500">{{ tabs.find(t => t.id === currentTab).desc }}</p>
+                    </div>
+                </div>
+                <div class="flex bg-white border border-gray-200 p-1 rounded-lg text-xs font-medium">
+                    <button @click="filterType = 'all'" :class="{'bg-gray-100 text-gray-900 font-bold': filterType === 'all'}" class="px-3 py-1.5 rounded-md transition text-gray-500">All</button>
+                    <button @click="filterType = 'Proprietary'" :class="{'bg-purple-50 text-purple-700 font-bold': filterType === 'Proprietary'}" class="px-3 py-1.5 rounded-md transition text-gray-500">Proprietary</button>
+                    <button @click="filterType = 'Open Source'" :class="{'bg-green-50 text-green-700 font-bold': filterType === 'Open Source'}" class="px-3 py-1.5 rounded-md transition text-gray-500">Open Source</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200 text-xs uppercase tracking-wider">
+                        <tr>
+                            <th class="px-4 py-4 w-12 text-center sticky left-0 bg-gray-50 z-10">#</th>
+                            <th class="px-4 py-4 sticky left-12 bg-gray-50 z-10 w-48 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Model</th>
+                            <th @click="sortBy('final')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">Final <span :class="getSortIconClass('final')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('stem')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition"><div class="flex items-center gap-1">Stem Acc <span :class="getSortIconClass('stem')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('visual')" class="px-4 py-4 cursor-pointer hover:bg-gray-100 transition border-r border-gray-200"><div class="flex items-center gap-1">Visual Sim <span :class="getSortIconClass('visual')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('recall')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">Recall <span :class="getSortIconClass('recall')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('precision')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50/50 text-orange-800"><div class="flex items-center gap-1">Precision <span :class="getSortIconClass('precision')" class="text-xs">▼</span></div></th>
+                            <th @click="sortBy('refusalF1')" class="px-4 py-4 cursor-pointer hover:bg-orange-100 transition bg-orange-50 text-orange-900 border-l border-orange-100"><div class="flex items-center gap-1 font-bold">Refusal F1 <span :class="getSortIconClass('refusalF1')" class="text-xs">▼</span></div></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        <transition-group name="fade">
+                            <tr v-for="(item, index) in sortedData" :key="item.model" class="hover:bg-gray-50 transition group">
+                                <td class="px-4 py-3 text-center font-bold text-gray-400 sticky left-0 bg-white group-hover:bg-gray-50 z-10">
+                                    <span v-if="index === 0" class="text-xl">🥇</span>
+                                    <span v-else-if="index === 1" class="text-xl">🥈</span>
+                                    <span v-else-if="index === 2" class="text-xl">🥉</span>
+                                    <span v-else>{{ index + 1 }}</span>
+                                </td>
+                                <td class="px-4 py-3 sticky left-12 bg-white group-hover:bg-gray-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                                    <div class="font-bold text-gray-900">{{ item.model }}</div>
+                                    <div class="mt-0.5"><span :class="item.type === 'Open Source' ? 'text-green-600' : 'text-purple-600'" class="text-[10px] uppercase tracking-wide font-bold">{{ item.type }}</span></div>
+                                </td>
+                                <td class="px-4 py-3"><div class="font-mono font-bold text-indigo-700">{{ item.final.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-indigo-600" :style="{ width: item.final + '%' }"></div></div></td>
+                                <td class="px-4 py-3"><div class="font-mono text-gray-600">{{ item.stem.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-gray-400" :style="{ width: item.stem + '%' }"></div></div></td>
+                                <td class="px-4 py-3 border-r border-gray-100"><div class="font-mono text-gray-600">{{ item.visual.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-gray-400" :style="{ width: item.visual + '%' }"></div></div></td>
+                                <td class="px-4 py-3 bg-orange-50/20"><div class="font-mono text-gray-600 text-xs">{{ item.recall ? item.recall.toFixed(2) : '-' }}</div><div class="w-12 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-orange-300" :style="{ width: item.recall + '%' }"></div></div></td>
+                                <td class="px-4 py-3 bg-orange-50/20"><div class="font-mono text-gray-600 text-xs">{{ item.precision ? item.precision.toFixed(2) : '-' }}</div><div class="w-12 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full bg-orange-300" :style="{ width: item.precision + '%' }"></div></div></td>
+                                <td class="px-4 py-3 bg-orange-50/50 border-l border-orange-100"><div class="font-mono font-bold" :class="item.refusalF1 < 40 ? 'text-red-600' : 'text-green-600'">{{ item.refusalF1.toFixed(2) }}</div><div class="w-16 h-1 bg-gray-100 rounded-full mt-1"><div class="h-full" :class="item.refusalF1 < 40 ? 'bg-red-400' : 'bg-green-500'" :style="{ width: item.refusalF1 + '%' }"></div></div></td>
+                            </tr>
+                        </transition-group>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <footer class="mt-8 text-center text-gray-400 text-xs"><p>Data Source: "MathDoc: Benchmarking Structured Extraction..." (2026)</p></footer>
+    </main>
+</div>
+
+<script>
+    const { createApp, nextTick } = Vue;
+
+    createApp({
+        data() {
+            return {
+                currentTab: 'choice',
+                sortKey: 'final',
+                sortDesc: true,
+                filterType: 'all',
+                radarChart: null,
+                distChart: null,
+                lengthChart: null,
+                formulaChart: null,
+
+                // ✅ 这里是题型统计数据，你可以手动修改数值
+                datasetStats: {
+                    choice: 1250,
+                    blank: 1100,
+                    subjective: 1259
+                },
+
+                // 题目平均长度（按题型）
+                avgLength: {
+                    choice: 180,
+                    blank: 110,
+                    subjective: 195
+                },
+
+                // 平均公式含量（按题型，百分比）
+                formulaRatio: {
+                    choice: 50,
+                    blank: 47,
+                    subjective: 44
+                },
+
+                tabs: [
+                    { id: 'solve', name: 'Overall', emoji: '📊', desc: 'Weighted average across all tasks.' },
+                    { id: 'choice', name: 'Choice Questions', emoji: '🤔', desc: 'Extraction of option text and selection.' },
+                    { id: 'blank', name: 'Fill-in-the-Blank', emoji: '📝', desc: 'Text and formula extraction.' },
+                ],
+
+                datasets: {
+                    'solve': [
+                    { model: "Gemini-2.5-Pro",       type: "Proprietary", stem: 86.82, visual: 45.94, recall: 58.86, precision: 78.15, refusalF1: 67.15, final: 66.94 },
+                    { model: "Qwen3-VL-30B",         type: "Open Source", stem: 88.91, visual: 62.67, recall: 20.38, precision: 78.05, refusalF1: 32.32, final: 65.05 },
+                    { model: "Doubao-Seed-1.6-Vis",  type: "Proprietary", stem: 82.96, visual: 45.11, recall: 31.01, precision: 73.13, refusalF1: 43.56, final: 59.10 },
+                    { model: "Qwen3-VL-8B",          type: "Open Source", stem: 85.59, visual: 42.26, recall: 24.20, precision: 67.86, refusalF1: 35.68, final: 56.80 },
+                    { model: "GLM-4.6V-9B",          type: "Open Source", stem: 78.43, visual: 48.87, recall: 29.03, precision: 56.25, refusalF1: 38.30, final: 56.17 },
+                    { model: "PaddleOCR-VL",         type: "Open Source", stem: 69.86, visual: 45.65, recall: 29.11, precision: 80.70, refusalF1: 42.79, final: 55.46 },
+                    { model: "InternVL-8B",          type: "Open Source", stem: 60.28, visual: 18.38, recall: 27.15, precision: 27.33, refusalF1: 27.24, final: 35.30 },
+                    { model: "GPT-4o",               type: "Proprietary", stem: 49.51, visual: 19.67, recall: 33.33, precision: 34.90, refusalF1: 34.10, final: 34.43 },
+                    { model: "Mineru-2.5",           type: "Open Source", stem: 52.52, visual: 23.88, recall: 23.57, precision: 29.13, refusalF1: 26.06, final: 34.22 },
+                    { model: "DeepSeek-OCR",         type: "Open Source", stem: 39.09, visual: 20.18, recall: 37.89, precision: 23.64, refusalF1: 29.12, final: 29.82 }
+                  ],
+                    'choice': [
+                        { model: "Gemini-2.5-Pro",       type: "Proprietary", stem: 82.08, visual: 44.12, recall: 50.67, precision: 59.94, refusalF1: 54.91, final: 60.45 },
+                        { model: "Qwen3-VL-30B",         type: "Open Source", stem: 84.50, visual: 59.19, recall: 14.17, precision: 52.48, refusalF1: 22.32, final: 57.78 },
+                        { model: "PaddleOCR-VL",         type: "Open Source", stem: 75.18, visual: 44.87, recall: 26.13, precision: 50.00, refusalF1: 34.33, final: 52.28 },
+                        { model: "GLM-4.6V-9B",          type: "Open Source", stem: 76.20, visual: 44.41, recall: 15.62, precision: 45.11, refusalF1: 23.21, final: 49.52 },
+                        { model: "Doubao-Seed-1.6-Vis",  type: "Proprietary", stem: 74.24, visual: 31.62, recall: 35.90, precision: 47.87, refusalF1: 41.03, final: 49.14 },
+                        { model: "Qwen3-VL-8B",          type: "Open Source", stem: 82.37, visual: 28.44, recall: 15.30, precision: 60.42, refusalF1: 24.42, final: 48.06 },
+                        { model: "InternVL-8B",          type: "Open Source", stem: 56.59, visual: 16.63, recall: 38.07, precision: 31.32, refusalF1: 34.36, final: 35.92 },
+                        { model: "DeepSeek-OCR",         type: "Open Source", stem: 47.72, visual: 20.33, recall: 39.69, precision: 23.16, refusalF1: 29.25, final: 32.91 },
+                        { model: "Mineru-2.5",           type: "Open Source", stem: 47.42, visual: 23.94, recall: 26.19, precision: 21.29, refusalF1: 23.49, final: 31.67 },
+                        { model: "GPT-4o",               type: "Proprietary", stem: 37.83, visual: 10.07, recall: 25.07, precision: 16.04, refusalF1: 19.56, final: 22.71 }
+                    ],
+                    'blank': [
+                        { model: "Qwen3-VL-30B",         type: "Open Source", stem: 88.91, visual: 62.67, recall: 20.38, precision: 78.05, refusalF1: 32.32, final: 65.05 },
+                        { model: "Gemini-2.5-Pro",       type: "Proprietary", stem: 83.46, visual: 42.77, recall: 53.38, precision: 58.20, refusalF1: 55.69, final: 60.65 },
+                        { model: "PaddleOCR-VL",         type: "Open Source", stem: 76.52, visual: 40.13, recall: 32.82, precision: 63.24, refusalF1: 43.22, final: 54.34 },
+                        { model: "GLM-4.6V-9B",          type: "Open Source", stem: 74.54, visual: 40.94, recall: 38.19, precision: 50.00, refusalF1: 43.31, final: 53.09 },
+                        { model: "Qwen3-VL-8B",          type: "Open Source", stem: 82.59, visual: 31.89, recall: 28.36, precision: 58.46, refusalF1: 38.19, final: 52.05 },
+                        { model: "Doubao-Seed-1.6-Vis",  type: "Proprietary", stem: 76.78, visual: 32.86, recall: 31.58, precision: 47.73, refusalF1: 38.01, final: 49.57 },
+                        { model: "Mineru-2.5",           type: "Open Source", stem: 53.35, visual: 26.73, recall: 38.13, precision: 32.72, refusalF1: 35.22, final: 38.47 },
+                        { model: "InternVL-8B",          type: "Open Source", stem: 57.42, visual: 16.99, recall: 36.67, precision: 31.61, refusalF1: 33.95, final: 36.15 },
+                        { model: "DeepSeek-OCR",         type: "Open Source", stem: 40.61, visual: 16.84, recall: 44.90, precision: 21.57, refusalF1: 29.14, final: 29.77 },
+                        { model: "GPT-4o",               type: "Proprietary", stem: 36.18, visual: 12.37, recall: 42.86, precision: 22.62, refusalF1: 29.61, final: 26.75 }
+                    ]
+                }
+            }
+        },
+        computed: {
+            currentData() { return this.datasets[this.currentTab] || []; },
+            sortedData() {
+                let data = [...this.currentData];
+                if (this.filterType !== 'all') data = data.filter(item => item.type === this.filterType);
+                return data.sort((a, b) => {
+                    if (a[this.sortKey] === b[this.sortKey]) return 0;
+                    return this.sortDesc ? (b[this.sortKey] - a[this.sortKey]) : (a[this.sortKey] - b[this.sortKey]);
+                });
+            },
+            getSortIconClass() { return (key) => this.sortKey !== key ? 'opacity-30' : (this.sortDesc ? 'opacity-100 rotate-0' : 'opacity-100 rotate-180 transform'); }
+        },
+        watch: {
+            currentTab() { this.updateRadar(); }
+        },
+        mounted() {
+            this.initDistChart();
+            this.initLengthChart();
+            this.initFormulaChart();
+            this.updateRadar();
+        },
+        methods: {
+            sortBy(key) {
+                if (this.sortKey === key) this.sortDesc = !this.sortDesc;
+                else { this.sortKey = key; this.sortDesc = true; }
+            },
+            // 1. 初始化分布图 (Doughnut)
+            initDistChart() {
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                this.distChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Choice', 'Blank', 'Subjective'],
+                        datasets: [{
+                            data: [this.datasetStats.choice, this.datasetStats.blank, this.datasetStats.subjective],
+                            backgroundColor: ['#3b82f6', '#14b8a6', '#a855f7'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%', // 甜甜圈变细
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: { label: (c) => ` ${c.label}: ${c.raw} items` }
+                            }
+                        }
+                    }
+                });
+            },
+            // 2. 更新雷达图 (Radar) - 完整版，包含所有5个指标
+            updateRadar() {
+                nextTick(() => {
+                    const topModels = this.sortedData.slice(0, 3);
+                    if (!topModels.length) return;
+
+                    const labels = ['Stem Acc', 'Visual Sim', 'Recall', 'Precision', 'Refusal F1'];
+                    const colors = [
+                        { border: '#6366f1', bg: 'rgba(99, 102, 241, 0.2)' },
+                        { border: '#10b981', bg: 'rgba(16, 185, 129, 0.2)' },
+                        { border: '#f59e0b', bg: 'rgba(245, 158, 11, 0.2)' }
+                    ];
+
+                    const datasets = topModels.map((model, index) => ({
+                        label: model.model,
+                        data: [
+                            model.stem,
+                            model.visual,
+                            model.recall || 0,
+                            model.precision || 0,
+                            model.refusalF1
+                        ],
+                        borderColor: colors[index % 3].border,
+                        backgroundColor: colors[index % 3].bg,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: colors[index % 3].border,
+                        pointRadius: 3,
+                        fill: true
+                    }));
+
+                    const ctx = document.getElementById('capabilityRadar').getContext('2d');
+                    if (this.radarChart) this.radarChart.destroy();
+
+                    this.radarChart = new Chart(ctx, {
+                        type: 'radar',
+                        data: { labels, datasets },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                r: {
+                                    min: 0,
+                                    max: 100,
+                                    ticks: {
+                                        stepSize: 20,
+                                        font: { size: 9 },
+                                        color: '#9ca3af'
+                                    },
+                                    pointLabels: {
+                                        font: { size: 11, weight: '600' },
+                                        color: '#4b5563'
+                                    },
+                                    grid: {
+                                        color: 'rgba(156, 163, 175, 0.2)'
+                                    },
+                                    angleLines: {
+                                        color: 'rgba(156, 163, 175, 0.2)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                                    padding: 12,
+                                    titleFont: { size: 13 },
+                                    bodyFont: { size: 12 }
+                                }
+                            }
+                        }
+                    });
+                });
+            },
+
+            // 3. 初始化题目平均长度柱状图
+            initLengthChart() {
+                const ctx = document.getElementById('lengthChart').getContext('2d');
+                this.lengthChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Choice', 'Blank', 'Subjective'],
+                        datasets: [{
+                            label: 'Average Length',
+                            data: [this.avgLength.choice, this.avgLength.blank, this.avgLength.subjective],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(20, 184, 166, 0.8)',
+                                'rgba(168, 85, 247, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgb(59, 130, 246)',
+                                'rgb(20, 184, 166)',
+                                'rgb(168, 85, 247)'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                                padding: 12,
+                                callbacks: {
+                                    label: (context) => ` ${context.raw} chars`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(156, 163, 175, 0.15)' },
+                                ticks: {
+                                    color: '#6b7280',
+                                    font: { size: 11 }
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#374151',
+                                    font: { size: 12, weight: '500' }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
+            // 4. 初始化公式含量柱状图
+            initFormulaChart() {
+                const ctx = document.getElementById('formulaChart').getContext('2d');
+                this.formulaChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Choice', 'Blank', 'Subjective'],
+                        datasets: [{
+                            label: 'Formula Ratio',
+                            data: [this.formulaRatio.choice, this.formulaRatio.blank, this.formulaRatio.subjective],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(20, 184, 166, 0.8)',
+                                'rgba(168, 85, 247, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgb(59, 130, 246)',
+                                'rgb(20, 184, 166)',
+                                'rgb(168, 85, 247)'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                                padding: 12,
+                                callbacks: {
+                                    label: (context) => ` ${context.raw}%`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: 'rgba(156, 163, 175, 0.15)' },
+                                ticks: {
+                                    color: '#6b7280',
+                                    font: { size: 11 },
+                                    callback: (value) => value + '%'
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#374151',
+                                    font: { size: 12, weight: '500' }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>
