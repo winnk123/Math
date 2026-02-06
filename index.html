@@ -80,15 +80,15 @@
                 <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
                     <div class="bg-blue-50 rounded p-2">
                         <div class="font-bold text-blue-700">2,169</div>
-                        <div class="text-blue-400">choice</div>
+                        <div class="text-blue-400">{{ t('choiceLabel') }}</div>
                     </div>
                     <div class="bg-teal-50 rounded p-2">
                         <div class="font-bold text-teal-700">758</div>
-                        <div class="text-teal-400">blank</div>
+                        <div class="text-teal-400">{{ t('blankLabel') }}</div>
                     </div>
                     <div class="bg-purple-50 rounded p-2">
                         <div class="font-bold text-purple-700">682</div>
-                        <div class="text-purple-400">solve</div>
+                        <div class="text-purple-400">{{ t('solveLabel') }}</div>
                     </div>
                 </div>
             </div>
@@ -257,6 +257,9 @@
                         avgLengthDesc: '按题型统计字符数',
                         avgFormula: '平均公式含量',
                         avgFormulaDesc: '公式含量百分比',
+                        choiceLabel: '选择题',
+                        blankLabel: '填空题',
+                        solveLabel: '解答题',
                         model: '模型',
                         final: '总分',
                         stemAcc: '主干准确率',
@@ -293,6 +296,9 @@
                         avgLengthDesc: 'Character count by question type',
                         avgFormula: 'Average Formula Ratio',
                         avgFormulaDesc: 'Formula content percentage',
+                        choiceLabel: 'choice',
+                        blankLabel: 'blank',
+                        solveLabel: 'solve',
                         model: 'Model',
                         final: 'Final',
                         stemAcc: 'Stem Acc',
@@ -435,7 +441,7 @@
             },
             // 获取图表标签
             getChartLabels() {
-                return this.lang === 'zh' ? ['solve', 'choice', 'blank'] : ['solve', 'choice', 'blank'];
+                return [this.t('choiceLabel'), this.t('blankLabel'), this.t('solveLabel')];
             },
             // 切换语言
             toggleLang() {
