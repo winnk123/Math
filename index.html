@@ -456,6 +456,14 @@
                     this.distChart.destroy();
                     this.initDistChart();
                 }
+                if (this.lengthChart) {
+                    this.lengthChart.destroy();
+                    this.initLengthChart();
+                }
+                if (this.formulaChart) {
+                    this.formulaChart.destroy();
+                    this.initFormulaChart();
+                }
                 if (this.radarChart) {
                     this.updateRadar();
                 }
