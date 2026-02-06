@@ -378,19 +378,11 @@
         computed: {
             currentData() { return this.datasets[this.currentTab] || []; },
             tabs() {
-                const tabsData = {
-                    zh: [
-                        { id: 'solve', name: 'solve', emoji: '📊', desc: '所有任务的加权平均' },
-                        { id: 'choice', name: 'choice', emoji: '🤔', desc: '选项文本提取与选择' },
-                        { id: 'blank', name: 'blank', emoji: '📝', desc: '文本和公式提取' },
-                    ],
-                    en: [
-                        { id: 'solve', name: 'Overall', emoji: '📊', desc: 'Weighted average across all tasks.' },
-                        { id: 'choice', name: 'choice', emoji: '🤔', desc: 'Extraction of option text and selection.' },
-                        { id: 'blank', name: 'blank', emoji: '📝', desc: 'Text and formula extraction.' },
-                    ]
-                };
-                return tabsData[this.lang] || tabsData.en;
+                return [
+                    { id: 'solve', name: this.t('overall'), emoji: '📊', desc: this.t('overallDesc') },
+                    { id: 'choice', name: this.t('choiceLabel'), emoji: '🤔', desc: this.t('choiceDesc') },
+                    { id: 'blank', name: this.t('blankLabel'), emoji: '📝', desc: this.t('blankDesc') }
+                ];
             },
             sortedData() {
                 let data = [...this.currentData];
